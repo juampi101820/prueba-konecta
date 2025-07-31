@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useDebounce } from "./useDebounce";
 
 export const useTablaPaginada = (fetchFunction, filtrosIniciales = {}) => {
   const [data, setData] = useState([]);
@@ -8,12 +9,17 @@ export const useTablaPaginada = (fetchFunction, filtrosIniciales = {}) => {
   const [filtros, setFiltros] = useState(filtrosIniciales);
   const [loading, setLoading] = useState(true);
 
+  // Debounce para evitar multiples llamadas
+  const debouncedFiltros = useDebounce(filtros, 400);
+
   const fetchData = async () => {
     try {
       setLoading(true);
-      const respuesta = await fetchFunction({ pagina, limite, ...filtros });
+      const respuesta = await fetchFunction({ pagina, limite, ...debouncedFiltros });
       setData(respuesta.data);
       setTotal(respuesta.total);
+    } catch (error) {
+      console.error("Error al cargar datos:", error);
     } finally {
       setLoading(false);
     }
@@ -21,7 +27,7 @@ export const useTablaPaginada = (fetchFunction, filtrosIniciales = {}) => {
 
   useEffect(() => {
     fetchData();
-  }, [pagina, limite, filtros]);
+  }, [pagina, limite, debouncedFiltros]);
 
   return {
     data,
