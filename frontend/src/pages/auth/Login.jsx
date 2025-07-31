@@ -24,7 +24,7 @@ const Login = () => {
     try {
       await login(form);
       toast.success("Bienvenido");
-      //navigate("/");
+      navigate("/");
     } catch (err) {
       if (err.status === 401 || err.status === 400) {
         setError("Credenciales invalidas");
