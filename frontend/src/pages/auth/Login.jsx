@@ -1,18 +1,37 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { toast } from "react-toastify";
 
 const Login = () => {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     usuario: "",
     contrasena: "",
   });
 
+  const [error, setError] = useState(null);
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(form);
+    setError(null);
+    try {
+      await login(form);
+      toast.success("Bienvenido");
+      navigate("/");
+    } catch (err) {
+      if (err.status === 401 || err.status === 400) {
+        setError("Credenciales invalidas");
+      } else {
+        setError("Ocurrio un error inesperado");
+      }
+    }
   };
 
   return (
@@ -59,6 +78,9 @@ const Login = () => {
                   Contraseña
                 </label>
               </div>
+
+              {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
+
               <div className="relative">
                 <button
                   type="submit"

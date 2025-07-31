@@ -1,6 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { toast } from "react-toastify";
 
 const Register = () => {
+  const { register } = useAuth();
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     usuario: "",
     correo: "",
@@ -10,25 +16,40 @@ const Register = () => {
   });
 
   const [mostrarClave, setMostrarClave] = useState(false);
+  const [errores, setErrores] = useState([]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrores([]);
 
     if (form.contrasena !== form.confirmarContrasena) {
-      alert("Las contraseñas no coinciden");
+      setErrores([{ msg: "Las contraseñas no coinciden" }]);
       return;
     }
 
     if (!form.id_rol) {
-      alert("Por favor selecciona un rol");
+      setErrores([{ msg: "Por favor selecciona un rol" }]);
       return;
     }
 
-    console.log(form);
+    try {
+      const { confirmarContrasena, ...datos } = form;
+      await register(datos);
+      toast.success("Registro exitoso. Ahora puedes iniciar sesion");
+      navigate("/login");
+    } catch (error) {
+      if (error.status === 400 && Array.isArray(error.data?.errores)) {
+        setErrores(error.data.errores);
+      } else if (error.status === 409 && error.data?.mensaje) {
+        setErrores([{ msg: error.data.mensaje }]);
+      } else {
+        setErrores([{ msg: "Ocurrrio un error inesperado" }]);
+      }
+    }
   };
 
   return (
@@ -148,6 +169,14 @@ const Register = () => {
                 </button>
               </div>
             </form>
+
+            {errores.length > 0 && (
+              <ul className="text-sm text-red-600 space-y-1 mt-4">
+                {errores.map((err, i) => (
+                  <li key={i}>• {err.msg}</li>
+                ))}
+              </ul>
+            )}
 
             <div className="mt-6 text-center text-sm">
               ¿Ya tienes una cuenta?{" "}
