@@ -3,7 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const sequelize = require("./config/database");
 const authRoutes = require('./interfaces/routes/AuthRoutes');
-const empleadoRoutes = require('./interfaces/routes/empleadoRoutes');
+const empleadoRoutes = require('./interfaces/routes/EmpleadoRoutes');
 const solicitudRoutes = require('./interfaces/routes/SolicitudRoutes');
 
 const app = express();

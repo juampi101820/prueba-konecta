@@ -1,0 +1,33 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: usuario_prueba
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: prueba_konectadb
+    ports:
+      - "5433:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    restart: always
+    env_file: ./backend/.env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: usuario_prueba
+      DB_PASSWORD: 12345
+      DB_NAME: prueba_konectadb
+      JWT_SECRET: pruebajwt
+      JWT_EXPIRATION: 1h
+
+volumes:
+  db_data:
