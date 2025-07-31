@@ -3,10 +3,11 @@ const router = express.Router();
 
 const validarEmpleado = require('../middlewares/validacionEmpleado');
 const EmpleadoController = require('../controllers/EmpleadoController');
+const authMiddleware = require('../middlewares/authMiddleware');
 
 // rutas
-router.post('/', validarEmpleado, EmpleadoController.crear);
-router.get('/', EmpleadoController.listar);
+router.post('/', authMiddleware, validarEmpleado, EmpleadoController.crear);
+router.get('/', authMiddleware, EmpleadoController.listar);
 
 
 module.exports = router;
