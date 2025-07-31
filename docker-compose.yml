@@ -1,4 +1,3 @@
-version: "3.9"
 services:
   db:
     image: postgres:15
@@ -28,6 +27,14 @@ services:
       DB_NAME: prueba_konectadb
       JWT_SECRET: pruebajwt
       JWT_EXPIRATION: 1h
+
+  frontend:
+    build: ./frontend
+    restart: always
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
 
 volumes:
   db_data:
