@@ -40,6 +40,7 @@ Sistema con autenticación JWT, manejo de roles (ADMINISTRADOR, EMPLEADO), CRUD 
     ```
 
 - El backend queda en [http://localhost:3000](http://localhost:3000)
+- Frontend (React) disponible en: [http://localhost:5173](http://localhost:5173)  
 - La base de datos en `localhost:5433`, usuario `usuario_prueba`, clave `12345`, base `prueba_konectadb`
 - Script para roles/tablas en `BD/scriptTablas.sql` (se debe ejecutar en el pgadmin)
 
@@ -48,7 +49,7 @@ Sistema con autenticación JWT, manejo de roles (ADMINISTRADOR, EMPLEADO), CRUD 
 - Instala Node.js 18+
 - Crea la BD y el `.env`
 - Corre `npm install` y `npm start` en `/backend`
-
+- Corre `npm install` y `npm start` en `/frontend`
 ---
 
 ## Variables de entorno
@@ -65,22 +66,27 @@ JWT_SECRET=pruebajwt
 JWT_EXPIRATION=1h
 ```
 
+Ejemplo en `/frontend/.env.example`:
+```env
+VITE_API_URL=http://localhost:3000
+```
+
 ## Estructura del proyecto
 <img width="991" height="393" alt="arquitectura drawio" src="https://github.com/user-attachments/assets/4d6b22f0-6b04-4a54-a617-7e0fdb7ef549" />
 
 ## Decisiones y buenas prácticas
-- Código en capas (rutas, controladores, servicios, repositorios) manejando la arquitectura DDD
+- Codigo en capas (rutas, controladores, servicios, repositorios) manejando la arquitectura DDD
 - Roles protegidos (solo admin puede borrar solicitudes)
 - Validación de datos y uso de ORM (Sequelize) para evitar SQL Injection
 - JWT para autenticación
-- Paginación y filtrado en endpoints
+- Paginacion y filtrado en endpoints
 - Docker y .env para despliegue simple
 
 ### Seguridad
-- JWT seguro y expiración corta
+- JWT seguro y expiracion corta
 - Roles desde la BD
 - Entradas validadas
-- Claves fuera del código (env)
+- Claves fuera del codigo (env)
 - No se expone info sensible en respuestas
 
 ## Diseño responsive
