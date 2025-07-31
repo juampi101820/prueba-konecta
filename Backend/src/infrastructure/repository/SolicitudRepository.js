@@ -4,13 +4,10 @@ const { Op } = require('sequelize');
 class SolicitudRepository {
     static async listar({ limit = 20, offset = 0, filtros = {} } = {}) {
         const where = {};
+        const include = [];
 
         if (filtros.tipo) {
             where.tipo = { [Op.iLike]: `%${filtros.tipo}%` };
-        }
-
-        if (filtros.id_empleado) {
-            where.id_empleado = filtros.id_empleado;
         }
 
         if (filtros.fecha_inicio && filtros.fecha_fin) {
@@ -21,9 +18,20 @@ class SolicitudRepository {
             where.fecha = filtros.fecha;
         }
 
+        if (filtros.nombre_empleado) {
+            include.push({
+                model: Empleado,
+                where: {
+                    nombre: { [Op.iLike]: `%${filtros.nombre_empleado}%` }
+                }
+            });
+        } else {
+            include.push({ model: Empleado });
+        }
+
         return Solicitud.findAndCountAll({
             where,
-            include: [{ model: Empleado }],
+            include,
             limit,
             offset,
             order: [['id', 'ASC']],

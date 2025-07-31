@@ -7,7 +7,7 @@ const listar = async (req, res) => {
 
         const filtros = {
             tipo: req.query.tipo || undefined,
-            id_empleado: req.query.id_empleado || undefined,
+            nombre_empleado: req.query.nombre_empleado || undefined,
             fecha: req.query.fecha || undefined,
             fecha_inicio: req.query.fecha_inicio || undefined,
             fecha_fin: req.query.fecha_fin || undefined,
