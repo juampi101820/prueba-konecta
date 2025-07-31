@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useTablaPaginada } from "../../hooks/useTablaPaginada";
-import { listarSolicitudes } from "../../services/solicitudService";
+import { listarSolicitudes, eliminarSolicitud } from "../../services/solicitudService";
 import ModalSolicitudForm from "../../components/ModalSolicitudForm";
+import { toast } from "react-toastify";
 
 const SolicitudesPage = () => {
   const {
@@ -28,6 +29,22 @@ const SolicitudesPage = () => {
   const handleChangeFiltro = (e) => {
     setFiltros({ ...filtros, [e.target.name]: e.target.value });
     setPagina(1);
+  };
+
+  const handleEliminar = async (id) => {
+    const confirmar = window.confirm(
+      "¿Estás seguro que deseas eliminar esta solicitud?"
+    );
+    if (!confirmar) return;
+
+    try {
+      await eliminarSolicitud(id);
+      toast.success("Solicitud eliminada correctamente");
+      refetch();
+    } catch (error) {
+      console.error(error);
+      toast.error("Error al eliminar la solicitud");
+    }
   };
 
   return (
@@ -146,18 +163,21 @@ const SolicitudesPage = () => {
               <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">
                 Descripción
               </th>
+              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">
+                Acciones
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
             {loading ? (
               <tr>
-                <td colSpan="5" className="text-center p-6">
+                <td colSpan="6" className="text-center p-6">
                   Cargando...
                 </td>
               </tr>
             ) : solicitudes.length === 0 ? (
               <tr>
-                <td colSpan="5" className="text-center p-6 text-gray-500">
+                <td colSpan="6" className="text-center p-6 text-gray-500">
                   Sin resultados
                 </td>
               </tr>
@@ -169,6 +189,14 @@ const SolicitudesPage = () => {
                   <td className="px-6 py-4">{s.fecha}</td>
                   <td className="px-6 py-4">{s.Empleado?.nombre}</td>
                   <td className="px-6 py-4">{s.descripcion}</td>
+                  <td className="px-6 py-4">
+                    <button
+                      onClick={() => handleEliminar(s.id)}
+                      className="text-red-600 hover:text-red-800 text-sm"
+                    >
+                      Eliminar
+                    </button>
+                  </td>
                 </tr>
               ))
             )}

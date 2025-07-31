@@ -9,3 +9,8 @@ export const crearSolicitud = async (datos) => {
   const { data } = await api.post("/api/solicitudes", datos);
   return data;
 };
+
+export const eliminarSolicitud = async (id) => {
+  const { data } = await api.delete(`/api/solicitudes/${id}`);
+  return data;
+}
