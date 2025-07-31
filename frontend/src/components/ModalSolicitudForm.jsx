@@ -12,13 +12,18 @@ const ModalSolicitudForm = ({ onClose, onSuccess }) => {
   });
 
   const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState(null);
+  const [errores, setErrores] = useState({});
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    setErrores({ ...errores, [e.target.name]: null });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setErrores({});
+
     if (!form.id_empleado) {
       toast.error("Seleccione un empleado");
       return;
@@ -30,8 +35,27 @@ const ModalSolicitudForm = ({ onClose, onSuccess }) => {
       onSuccess();
       onClose();
     } catch (error) {
-      console.error(error);
-      toast.error("Error al registrar la solicitud");
+      const res = error;
+
+      if (res?.status === 400) {
+        if (Array.isArray(res.data?.errores)) {
+          const nuevoErrores = {};
+          for (const err of res.data.errores) {
+            if (err.path) {
+              nuevoErrores[err.path] = err.msg;
+            }
+          }
+          setErrores(nuevoErrores);
+        } else if (res.data?.mensaje) {
+          toast.error(res.data.mensaje);
+        } else {
+          toast.error("Error de validación desconocido");
+        }
+      } else if (res?.data?.mensaje) {
+        toast.error(res.data.mensaje);
+      } else {
+        toast.error("Error inesperado al registrar la solicitud");
+      }
     }
   };
 
@@ -41,6 +65,7 @@ const ModalSolicitudForm = ({ onClose, onSuccess }) => {
         <h2 className="text-xl font-bold mb-4">Registrar Solicitud</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Empleado */}
           <div>
             <label className="block text-sm font-medium mb-1">Empleado</label>
             <EmpleadoSelector
@@ -55,8 +80,12 @@ const ModalSolicitudForm = ({ onClose, onSuccess }) => {
               }}
               empleadoSeleccionado={empleadoSeleccionado}
             />
+            {errores.id_empleado && (
+              <p className="text-red-600 text-sm mt-1">{errores.id_empleado}</p>
+            )}
           </div>
 
+          {/* Tipo */}
           <div>
             <label className="block text-sm">Tipo</label>
             <input
@@ -67,8 +96,12 @@ const ModalSolicitudForm = ({ onClose, onSuccess }) => {
               required
               className="w-full border rounded px-3 py-2"
             />
+            {errores.tipo && (
+              <p className="text-red-600 text-sm mt-1">{errores.tipo}</p>
+            )}
           </div>
 
+          {/* Fecha */}
           <div>
             <label className="block text-sm">Fecha</label>
             <input
@@ -79,8 +112,12 @@ const ModalSolicitudForm = ({ onClose, onSuccess }) => {
               required
               className="w-full border rounded px-3 py-2"
             />
+            {errores.fecha && (
+              <p className="text-red-600 text-sm mt-1">{errores.fecha}</p>
+            )}
           </div>
 
+          {/* Descripción */}
           <div>
             <label className="block text-sm">Descripción</label>
             <textarea
@@ -91,8 +128,14 @@ const ModalSolicitudForm = ({ onClose, onSuccess }) => {
               rows={3}
               className="w-full border rounded px-3 py-2 resize-none"
             ></textarea>
+            {errores.descripcion && (
+              <p className="text-red-600 text-sm mt-1">
+                {errores.descripcion}
+              </p>
+            )}
           </div>
 
+          {/* Botones */}
           <div className="flex justify-end space-x-2">
             <button
               type="button"

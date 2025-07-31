@@ -9,20 +9,44 @@ const ModalEmpleadoForm = ({ onClose, onSuccess }) => {
     salario: "",
   });
 
+  const [errores, setErrores] = useState({});
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    setErrores({ ...errores, [e.target.name]: null }); // Limpia error individual
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrores({}); // Limpia todos los errores
+
     try {
       await crearEmpleado(form);
+      toast.success("Registro exitoso");
       onSuccess();
       onClose();
-      toast.success("Registro exitoso");
     } catch (error) {
-        console.log(error)
-      alert("Error al registrar empleado");
+      const res = error;
+
+      if (res?.status === 400) {
+        if (Array.isArray(res.data?.errores)) {
+          const nuevoErrores = {};
+          for (const err of res.data.errores) {
+            if (err.path) {
+              nuevoErrores[err.path] = err.msg;
+            }
+          }
+          setErrores(nuevoErrores);
+        } else if (res.data?.mensaje) {
+          toast.error(res.data.mensaje);
+        } else {
+          toast.error("Error de validación desconocido");
+        }
+      } else if (res?.data?.mensaje) {
+        toast.error(res.data.mensaje);
+      } else {
+        toast.error("Error inesperado al registrar el empleado");
+      }
     }
   };
 
@@ -31,6 +55,7 @@ const ModalEmpleadoForm = ({ onClose, onSuccess }) => {
       <div className="bg-white p-6 rounded shadow w-full max-w-md">
         <h2 className="text-xl font-bold mb-4">Registrar Empleado</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Nombre */}
           <div>
             <label className="block text-sm">Nombre</label>
             <input
@@ -41,7 +66,12 @@ const ModalEmpleadoForm = ({ onClose, onSuccess }) => {
               required
               className="w-full border rounded px-3 py-2"
             />
+            {errores.nombre && (
+              <p className="text-red-600 text-sm mt-1">{errores.nombre}</p>
+            )}
           </div>
+
+          {/* Fecha ingreso */}
           <div>
             <label className="block text-sm">Fecha Ingreso</label>
             <input
@@ -52,7 +82,12 @@ const ModalEmpleadoForm = ({ onClose, onSuccess }) => {
               required
               className="w-full border rounded px-3 py-2"
             />
+            {errores.fecha_ingreso && (
+              <p className="text-red-600 text-sm mt-1">{errores.fecha_ingreso}</p>
+            )}
           </div>
+
+          {/* Salario */}
           <div>
             <label className="block text-sm">Salario</label>
             <input
@@ -63,8 +98,12 @@ const ModalEmpleadoForm = ({ onClose, onSuccess }) => {
               required
               className="w-full border rounded px-3 py-2"
             />
+            {errores.salario && (
+              <p className="text-red-600 text-sm mt-1">{errores.salario}</p>
+            )}
           </div>
 
+          {/* Botones */}
           <div className="flex justify-end space-x-2">
             <button
               type="button"
