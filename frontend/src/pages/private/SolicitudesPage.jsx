@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTablaPaginada } from "../../hooks/useTablaPaginada";
 import { listarSolicitudes } from "../../services/solicitudService";
+import ModalSolicitudForm from "../../components/ModalSolicitudForm";
 
 const SolicitudesPage = () => {
   const {
@@ -12,6 +13,7 @@ const SolicitudesPage = () => {
     setPagina,
     setFiltros,
     filtros,
+    refetch,
   } = useTablaPaginada(listarSolicitudes, {
     tipo: "",
     nombre_empleado: "",
@@ -21,6 +23,7 @@ const SolicitudesPage = () => {
   });
 
   const totalPaginas = Math.ceil(total / limite);
+  const [mostrarModal, setMostrarModal] = useState(false);
 
   const handleChangeFiltro = (e) => {
     setFiltros({ ...filtros, [e.target.name]: e.target.value });
@@ -31,15 +34,32 @@ const SolicitudesPage = () => {
     <div className="space-y-8">
       {/* Encabezado */}
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-800">Gestión de Solicitudes</h1>
-        <button className="bg-cyan-600 text-white px-5 py-2 rounded hover:bg-cyan-700 transition">
+        <h1 className="text-2xl font-bold text-gray-800">
+          Gestión de Solicitudes
+        </h1>
+        <button
+          onClick={() => setMostrarModal(true)}
+          className="bg-cyan-600 text-white px-5 py-2 rounded hover:bg-cyan-700 transition"
+        >
           Crear nuevo
         </button>
+
+        {mostrarModal && (
+          <ModalSolicitudForm
+            onClose={() => setMostrarModal(false)}
+            onSuccess={() => {
+              setPagina(1);
+              refetch();
+            }}
+          />
+        )}
       </div>
 
       {/* Filtros */}
       <div className="bg-white shadow rounded-lg p-6 border border-gray-200">
-        <h2 className="text-lg font-semibold mb-4 text-gray-700">Filtros de búsqueda</h2>
+        <h2 className="text-lg font-semibold mb-4 text-gray-700">
+          Filtros de búsqueda
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">
@@ -111,21 +131,35 @@ const SolicitudesPage = () => {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">ID</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">Tipo</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">Fecha</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">Empleado</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">Descripción</th>
+              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">
+                ID
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">
+                Tipo
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">
+                Fecha
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">
+                Empleado
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">
+                Descripción
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
             {loading ? (
               <tr>
-                <td colSpan="5" className="text-center p-6">Cargando...</td>
+                <td colSpan="5" className="text-center p-6">
+                  Cargando...
+                </td>
               </tr>
             ) : solicitudes.length === 0 ? (
               <tr>
-                <td colSpan="5" className="text-center p-6 text-gray-500">Sin resultados</td>
+                <td colSpan="5" className="text-center p-6 text-gray-500">
+                  Sin resultados
+                </td>
               </tr>
             ) : (
               solicitudes.map((s) => (
