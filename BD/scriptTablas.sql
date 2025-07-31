@@ -1,3 +1,4 @@
+-- CREACION DE TABLAS
 CREATE TABLE rol (
     id SERIAL PRIMARY KEY,
     nombre VARCHAR(30) UNIQUE NOT NULL
@@ -18,6 +19,13 @@ CREATE TABLE usuario_rol (
         FOREIGN KEY (id_usuario) REFERENCES usuario(id) ON DELETE CASCADE,
     CONSTRAINT fk_rol
         FOREIGN KEY (id_rol) REFERENCES rol(id) ON DELETE CASCADE
+);
+
+CREATE TABLE empleado (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    fecha_ingreso DATE NOT NULL,
+    salario NUMERIC(12,2) NOT NULL
 );
 
 -- INSERTS INICIALES
