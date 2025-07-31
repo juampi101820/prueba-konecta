@@ -28,6 +28,14 @@ CREATE TABLE empleado (
     salario NUMERIC(12,2) NOT NULL
 );
 
+CREATE TABLE solicitud (
+    id SERIAL PRIMARY KEY,
+    id_empleado INTEGER NOT NULL REFERENCES empleado(id),
+    fecha DATE NOT NULL,
+    tipo VARCHAR(50) NOT NULL,
+    descripcion TEXT
+);
+
 -- INSERTS INICIALES
 INSERT INTO rol (nombre) VALUES ('EMPLEADO')
 INSERT INTO rol (nombre) VALUES ('ADMINISTRADOR')

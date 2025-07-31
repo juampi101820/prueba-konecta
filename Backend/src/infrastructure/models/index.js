@@ -15,6 +15,13 @@ Rol.belongsToMany(Usuario, {
   otherKey: "id_usuario",
 });
 
+Empleado.hasMany(Solicitud, {
+  foreignKey: 'id_empleado'
+});
+Solicitud.belongsTo(Empleado, {
+  foreignKey: 'id_empleado'
+});
+
 
 module.exports = {
   Usuario,
