@@ -13,6 +13,7 @@ Incluye backend (Node.js + PostgreSQL) y frontend (React), ambos dockerizados.
 - [Estructura del proyecto](#estructura-del-proyecto)
 - [Decisiones y buenas prácticas](#decisiones-y-buenas-prácticas)
 - [Seguridad](#seguridad)
+- [Diseño responsive](#Diseño-responsive)
 
 ---
 
