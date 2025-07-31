@@ -82,3 +82,7 @@ JWT_EXPIRATION=1h
 - Entradas validadas
 - Claves fuera del código (env)
 - No se expone info sensible en respuestas
+
+## Diseño responsive
+<img width="1772" height="552" alt="image" src="https://github.com/user-attachments/assets/b358db59-85b0-4423-84dc-a1165f948799" />
+
