@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const sequelize = require("./config/database");
 const authRoutes = require('./interfaces/routes/AuthRoutes');
+const empleadoRoutes = require('./interfaces/routes/empleadoRoutes');
 
 const app = express();
 
@@ -16,7 +17,7 @@ app.get("/", (req, res) => {
 
 // rutas
 app.use('/api/auth', authRoutes);
-
+app.use('/api/empleados', empleadoRoutes);
 
 // configuracion
 const PORT = process.env.PORT;

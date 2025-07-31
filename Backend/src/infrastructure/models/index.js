@@ -1,6 +1,7 @@
 const Usuario = require("./Usuario");
 const Rol = require("./Rol");
 const UsuarioRol = require("./UsuarioRol");
+const Empleado = require("./Empleado");
 
 // relaciones de la base de datos
 Usuario.belongsToMany(Rol, {
@@ -19,4 +20,5 @@ module.exports = {
   Usuario,
   Rol,
   UsuarioRol,
+  Empleado
 };
