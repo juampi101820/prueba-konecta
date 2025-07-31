@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const sequelize = require("./config/database");
+const authRoutes = require('./interfaces/routes/AuthRoutes');
 
 const app = express();
 
@@ -13,6 +14,11 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+// rutas
+app.use('/api/auth', authRoutes);
+
+
+// configuracion
 const PORT = process.env.PORT;
 
 (async () => {

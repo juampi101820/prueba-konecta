@@ -19,3 +19,8 @@ CREATE TABLE usuario_rol (
     CONSTRAINT fk_rol
         FOREIGN KEY (id_rol) REFERENCES rol(id) ON DELETE CASCADE
 );
+
+-- INSERTS INICIALES
+INSERT INTO rol (nombre) VALUES ('EMPLEADO')
+INSERT INTO rol (nombre) VALUES ('ADMINISTRADOR')
+
